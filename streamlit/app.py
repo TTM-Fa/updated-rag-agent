@@ -59,7 +59,7 @@ policies = {
     "Scholarship and Financial Assistance Policy": "https://www.udst.edu.qa/about-udst/institutional-excellence-ie/policies-and-procedures/scholarship-and-financial-assistance"
 }
 
-def stream_response(text, placeholder, delay=0.0005):
+def stream_response(text, placeholder, delay=0.005):
     """
     Displays text as if it's being typed in real-time.
     Args:

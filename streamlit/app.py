@@ -111,6 +111,7 @@ st.title("UDST Policy Query System")
 user_query = st.text_input("Enter your question:")
 
 if user_query:
+    st.empty()
     with st.spinner("Processing..."):
         # Mistral prompt to find relevant policies
         policy_list = "\n".join(policies.keys())
@@ -120,7 +121,7 @@ if user_query:
         {policy_list}
         ---------------------
         Based on the user query, which of these policies are most relevant? 
-        you must choose minumum 2 relevant policies, in a comma-separated list.
+        you must choose 2 most relevant policies, in a comma-separated list.
         Query: {user_query}
 
         Relevant Policies (in a comma-separated list):
@@ -159,7 +160,7 @@ if user_query:
         answer_prompt = f"""
     We have collected text from the following policies. 
     For each piece of information you use in your final answer, 
-    please specify the policy you are drawing from.
+    Specify the policy you are drawing from.
 
     Context:
     {structured_context}

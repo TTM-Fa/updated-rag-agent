@@ -59,6 +59,19 @@ policies = {
     "Scholarship and Financial Assistance Policy": "https://www.udst.edu.qa/about-udst/institutional-excellence-ie/policies-and-procedures/scholarship-and-financial-assistance"
 }
 
+def stream_response(text, placeholder, delay=0.00005):
+    """
+    Displays text as if it's being typed in real-time.
+    Args:
+        text (str): The full text to display.
+        placeholder (st.empty()): Streamlit placeholder for live updates.
+        delay (float): Time delay between each chunk of text (default: 50ms).
+    """
+    displayed_text = ""  # Start with an empty text
+    for char in text:
+        displayed_text += char  # Append one character at a time
+        placeholder.markdown(displayed_text)  # Update the placeholder
+        sleep(delay)  # Simulate typing delay
 
 def scrape_and_chunk_policies(relevant_policies):
     """Fetch relevant policies, combine them, and split into chunks."""
@@ -95,7 +108,6 @@ for name, url in policies.items():
 
 st.title("UDST Policy Query System")
 
-st.header("Query")
 user_query = st.text_input("Enter your question:")
 
 if user_query:
@@ -108,7 +120,7 @@ if user_query:
         {policy_list}
         ---------------------
         Based on the user query, which of these policies are most relevant? 
-        Please list the top 3 most relevant policies, in a comma-separated list.
+        Please list the top 2 most relevant policies, in a comma-separated list.
         Query: {user_query}
 
         Relevant Policies (in a comma-separated list):
@@ -133,40 +145,40 @@ if user_query:
 
         # Scrape the relevant policies’ text
         all_chunks = scrape_and_chunk_policies(relevant_policies)
-        # chunk_texts = [chunk[1] for chunk in all_chunks]
+        chunk_texts = [chunk[1] for chunk in all_chunks]
 
-# Build a structured context that associates each chunk with its policy
+        # Build a structured context that associates each chunk with its policy
         structured_context = ""
         for policy_name, chunk_text in all_chunks:
             structured_context += (
-                f"Policy Name: {policy_name}\n"
-                f"-----------------\n"
-                f"{chunk_text}\n\n"
+            f"Policy Name: {policy_name}\n"
+            f"-----------------\n"
+            f"{chunk_text}\n\n"
             )
 
-        # Here is the modified prompt that asks to identify which policy
-        # each piece of information comes from
         answer_prompt = f"""
-We have collected text from the following policies. 
-For each piece of information you use in your final answer, 
-please specify the policy you are drawing from.
+    We have collected text from the following policies. 
+    For each piece of information you use in your final answer, 
+    please specify the policy you are drawing from.
 
-Context:
-{structured_context}
+    Context:
+    {structured_context}
 
-Now, using ONLY this context (and not prior knowledge), answer the query:
-\"{user_query}\"
+    Now, using ONLY this context (and not prior knowledge), answer the query:
+    \"{user_query}\"
 
-refer to each from all policy and it's corresponding text in the context above. 
-Answer:
+    refer to each from all policies and it's corresponding text in the context above. 
+    Answer:
         """
 
         consolidated_response = mistral(answer_prompt)
-
-    # Show consolidated answer
     st.subheader("Consolidated Answer")
-    st.write(consolidated_response)
+    # Create a placeholder for live writing effect
+    response_placeholder = st.empty()
 
+    # Stream response with typing effect
+    stream_response(consolidated_response, response_placeholder)
+    
     # Show link to each relevant policy
     st.subheader("Policies Links")
     for policy_name in relevant_policies:

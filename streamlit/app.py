@@ -120,7 +120,7 @@ if user_query:
         {policy_list}
         ---------------------
         Based on the user query, which of these policies are most relevant? 
-        Please list the top 2 most relevant policies, in a comma-separated list.
+        you must choose minumum 2 relevant policies, in a comma-separated list.
         Query: {user_query}
 
         Relevant Policies (in a comma-separated list):
@@ -167,8 +167,8 @@ if user_query:
     Now, using ONLY this context (and not prior knowledge), answer the query:
     \"{user_query}\"
 
-    refer to each from all policies and it's corresponding text in the context above. 
-    Answer:
+    You must provide a well-structured answer based on the policies provided.
+    and use all of the provided policies in your answer.
         """
 
         consolidated_response = mistral(answer_prompt)
